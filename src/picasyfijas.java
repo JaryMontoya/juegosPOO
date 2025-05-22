@@ -1,6 +1,8 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Scanner;
 
 public class PicasYFijas {
 
@@ -43,45 +45,6 @@ public class PicasYFijas {
         picasFijas[1] = fijas;
     }
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-
-        String numeroSecreto = generarNumero();
-        String intento;
-        int picas, fijas;
-        int intentos = 0;
-
-        System.out.println("Bienvenido a Picas y Fijas");
-        System.out.println("Debes adivinar un número de 4 dígitos sin repetir.");
-
-        // Inicializamos fijas en 0 para comenzar el ciclo correctamente
-        fijas = 0;
-
-        // Inicia el ciclo para adivinar el número hasta que fijas sea 4
-        do {
-            System.out.print("Ingresa tu intento: ");
-            intento = scanner.next();
-
-            // Verificar si el intento tiene 4 dígitos y no tiene repetidos
-            if (intento.length() != 4 || tieneDigitosRepetidos(intento)) {
-                System.out.println("Debes ingresar un número de 4 dígitos sin repetir.");
-                continue;
-            }
-
-            intentos++;
-
-            // Calcular las picas y fijas
-            int[] picasFijas = new int[2]; // [picas, fijas]
-            calcularPicasFijas(numeroSecreto, intento, picasFijas);
-            picas = picasFijas[0];
-            fijas = picasFijas[1];
-
-            System.out.println("Fijas: " + fijas + ", Picas: " + picas);
-        } while (fijas < 4); // Repetir hasta que las fijas sean 4
-
-        System.out.println("¡Felicidades, adivinaste el número " + numeroSecreto + " en " + intentos + " intentos!");
-    }
-
     // Método para verificar si hay dígitos repetidos
     public static boolean tieneDigitosRepetidos(String numero) {
         for (int i = 0; i < numero.length(); i++) {
@@ -93,4 +56,46 @@ public class PicasYFijas {
         }
         return false;
     }
+
+    public static void main(String[] args) {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        String numeroSecreto = generarNumero();
+        String intento;
+        int picas, fijas;
+        int intentos = 0;
+
+        System.out.println("Bienvenido a Picas y Fijas");
+        System.out.println("Debes adivinar un número de 4 dígitos sin repetir.");
+
+        fijas = 0;
+
+        do {
+            System.out.print("Ingresa tu intento: ");
+            try {
+                intento = br.readLine();
+            } catch (IOException e) {
+                System.out.println("Error al leer la entrada. Intenta de nuevo.");
+                continue;
+            }
+
+            if (intento == null || intento.length() != 4 || tieneDigitosRepetidos(intento) || !intento.matches("\\d{4}")) {
+                System.out.println("Debes ingresar un número de 4 dígitos sin repetir.");
+                continue;
+            }
+
+            intentos++;
+
+            int[] picasFijas = new int[2]; // [picas, fijas]
+            calcularPicasFijas(numeroSecreto, intento, picasFijas);
+            picas = picasFijas[0];
+            fijas = picasFijas[1];
+
+            System.out.println("Fijas: " + fijas + ", Picas: " + picas);
+
+        } while (fijas < 4);
+
+        System.out.println("¡Felicidades, adivinaste el número " + numeroSecreto + " en " + intentos + " intentos!");
+    }
 }
+
